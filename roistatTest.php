@@ -5,7 +5,7 @@ function revertPunctuationMarks($str = null) {
     if(empty($str))
         return $str;
     
-    $marksCount = preg_match_all("/[^\w\d ]/", $str, $matches, PREG_OFFSET_CAPTURE);
+    $marksCount = preg_match_all("/[^\w\d ]/iu", $str, $matches, PREG_OFFSET_CAPTURE);
     if($marksCount === false)
     {
         //mb exception needed
@@ -28,16 +28,20 @@ function revertPunctuationMarks($str = null) {
     return $str;
 }
 
-class Test extends TestCase {
+class Test extends PHPUnit_Framework_TestCase {
+
+    /**
+     * @dataProvider revertPunctuationMarksDataProvider
+     */
     public function test_revertPunctuationMarks($str, $revertStr) {
         $this->assertEquals($revertStr, revertPunctuationMarks($str));
     }
-    
-    public function provider()
+
+    public function revertPunctuationMarksDataProvider()
     {
         return array(
             array('', ''),
-            array('abc,d.e? f!', ''),
+            array('abc,d.e? f!', 'abc!d?e. f,'),
         );
     }
 }
